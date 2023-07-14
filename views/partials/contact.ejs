@@ -1,0 +1,85 @@
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="/js/form.js"></script>
+
+<form action="/submit" method="post" role="form" id="contactForm">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">First Name:</span>
+                <input type="text" class="form-control" id="firstName" name="firstName" aria-label="First Name">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">Last Name:</span>
+                <input type="text" class="form-control" id="lastName" name="lastName" aria-label="Last Name">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">Email Address:</span>
+                <input type="email" class="form-control" id="email" name="email">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">Phone Number:</span>
+                <input type="tel" class="form-control" id="phone" name="phone">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="input-group">
+                <span class="input-group-text">Message:</span>
+                <textarea class="form-control" id="message" rows="4" name="message"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text">Would you like to receive a newsletter?</span>
+                <div class="btn-group" data-toggle="buttons" id="newsFreq">
+                    <label class="btn btn-secondary">
+                        <input type="radio" class="btn-check" name="newsletter" id="weekly" value="weekly"> Weekly
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" class="btn-check" name="newsletter" id="daily" value="daily"> Daily
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" class="btn-check" name="newsletter" id="none" value="none"> None
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text">Interests:</span>
+                <div class="btn-group" data-toggle="buttons">
+                    <% interests.forEach(function(interest) { %>
+                        <label class="btn btn-secondary">
+                            <input type="checkbox" class="btn-check" autocomplete="off" id="<%= interest.id %>"
+                                name="interest" value="<%= interest.id %>">
+                            <%= interest.name %>
+                        </label>
+                        <% }); %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            
+        </div>
+        <div class="col-md-2">
+            <div class="g-recaptcha" data-sitekey="6LdMTa4aAAAAAOJFsyXrYA3aIvYc9ON5mpoeDYWr" id="recaptchaWidget"></div>
+            <button type="submit" class="btn btn-primary" id="contactSubmit">Submit</button>
+        </div>
+    </div>
+</form>

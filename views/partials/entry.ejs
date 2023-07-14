@@ -1,0 +1,42 @@
+  <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<h3>
+				Message: <%= entry.id %>
+			</h3>
+			<ul class="list-group">
+				<li class="list-group-item">
+					First Name: <%= entry.firstName %>
+				</li>
+				<li class="list-group-item">
+					Last Name: <%= entry.lastName %>
+				</li>
+				<li class="list-group-item">
+					Email: <%= entry.email %>
+				</li>
+				<li class="list-group-item">
+					Phone: <%= entry.phone %>
+				</li>
+				<li class="list-group-item">
+					Newsletter: <%= entry.newsletter %>
+				</li>
+				
+				<li class="list-group-item">
+					Interests:
+                    <ul class="list-group">
+                    <% relevantInterests.forEach(function(interest, index) { %>
+                        <li class="list-group-item">
+                        <%= interest %><%= index !== relevantInterests.length - 1 ? '' : '' %>
+                        </li>
+                    <% }); %>
+        </ul>
+				</li>
+				
+		</div>
+		<div class="col-md-6" style="margin-top: 10%;">
+			<p class="lead">
+				<%= entry.message %>
+			</p>
+		</div>
+	</div>
+</div>

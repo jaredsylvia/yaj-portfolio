@@ -1,0 +1,69 @@
+.header,
+.footer {
+    background-color: darkcyan;
+    
+}
+
+.leftCol,
+.rightCol {
+    background-color: darkgray;
+}
+
+.bg-dkcyan {
+    background-color: darkcyan;
+
+}
+
+.bg-dkgray {
+    background-color: darkgray;
+}
+
+.font-white {
+    color: white;
+}
+
+#knightSnake {
+    width: 85%; /* Can be in percentage also. */
+    height: auto;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+    justify-content: center;
+}
+html,
+body {
+    height: 100%;
+}
+
+.midRow {
+    height: 100%;
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+#weatherDisplay {
+    display: flex;
+    align-items: center;
+}
+
+.weather-icon {
+    margin-right: 10px;
+}
+
+#weatherIcon {
+    font-size: 32px; 
+    line-height: 1;
+}
+
+.temperature {
+    text-align: center;
+}
+
+#temperature {
+    font-size: 12px; 
+    margin: 0;
+    text-align: center;
+}
+

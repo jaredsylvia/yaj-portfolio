@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row header" id="header">
+            <div class="col-md-12">
+
+                <%- include('../partials/header'); %>
+
+            </div>
+        </div>
+        <div class="row midRow">
+
+            <div class="col-md-2 leftCol" id="leftCol">
+                <%- include('../partials/leftCol'); %>
+            </div>
+
+
+
+            <div class="col-md-8" id="body">
+                <% try { %>
+                    <%- include(`../partials/${page}`); %>
+                        <% } catch (error) { %>
+
+                            <h4>Error: <%= page %> Not Found</h4>
+                            <% } %>
+
+                                <div id="alertSpace"></div>
+                                <div class="modal modal-xl fade" id="generalModal" tabindex="-1" role="dialog" aria-labelledby="pageModal">
+                                    <div class="modal-dialog" role="document">
+                                      <div class="modal-content" style="background-color: darkcyan; border-color: darkgrey; color: white;">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="pageModal">Title!</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                          <p>Message!</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+            </div>
+            <div class="col-md-2 rightCol" id="rightCol">
+                <%- include('../partials/rightCol'); %>
+            </div>
+        </div>
+        <div class="row footer" id="footer">
+            <div class="col-md-12">
+                <%- include('../partials/footer'); %>
+            </div>
+        </div>
+    </div>
+    
+    <% if (page==='contact' ) { %>
+        <script src="/js/form.js"></script>
+        <% } %>
+
+
+</body>
+
+</html>
