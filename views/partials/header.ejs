@@ -20,7 +20,39 @@
 					</a>
 				</li>
 				<% }) %>
+
+				<!-- nested drop down -->
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
+						data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
+						Product
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li class="dropdown-submenu-toggle">
+							<a class="dropdown-item dropdown-toggle dropdown-custom" href="#jobHistorySubmenu" data-bs-toggle="collapse"
+							   data-bs-auto-close="false">Product</a>
+							<ul class="collapse dropdown-submenu " id="jobHistorySubmenu">
+								<li><a class="dropdown-item" href="/product/gallery">Product Gallery</a></li>
+								<li><a class="dropdown-item" href="/product/details">Product Details</a></li>
+							</ul>
+						</li>
+						<li class="dropdown-submenu-toggle">
+							<a class="dropdown-item dropdown-toggle dropdown-custom" href="#serviceMenu" data-bs-toggle="collapse"
+							   data-bs-auto-close="false">Service</a>
+							<ul class="collapse dropdown-submenu" id="serviceMenu">
+								<li><a class="dropdown-item" href="/service/overview">Service Overview</a></li>
+								<li><a class="dropdown-item" href="/service/detail">Service Detail</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				
+				
+
+
 			</ul>
+			
+
 			<div class="navbar-text" id="weatherDisplay">
 				<div class="weather-icon">
 					<i id="weatherIcon" class="" data-bs-toggle="tooltip" data-bs-placement="top" title=""></i>

@@ -16,7 +16,7 @@ function showModal(title, message) {
     $('#generalModal .modal-title').text(title);
     $('#generalModal .modal-body').text(message);
     $('#generalModal').modal('show');
-  }
+}
 
 $(document).ready(function () {
     // Map weather conditions to Bootstrap icons
@@ -46,6 +46,8 @@ $(document).ready(function () {
         'fog': 'bi bi-cloud-fog'
     };
 
+    let isAnimating = false; // Flag to prevent animation spamming
+
     // Update the weather display
     if (weatherData) {
         // Extract relevant weather information
@@ -63,4 +65,44 @@ $(document).ready(function () {
             $('#weatherIcon').removeClass().addClass('bi bi-question');
         }
     }
+
+
+  
+
+
+    // Hover listener for social links
+    $('.social-link').hover(
+        function () {
+            if (!isAnimating) { // Check if not already animating
+                const serviceName = getServiceName($(this));
+                isAnimating = true; // Set animation flag to true
+                $('.service-name').fadeOut('fast', function () {
+                    $(this).text(serviceName).fadeIn('fast', function () {
+                        isAnimating = false; // Reset animation flag to false once animation is complete
+                    });
+                });
+            }
+        },
+        function () {
+            $('.service-name').fadeOut('fast');
+        }
+    );
+
+
+    // Function to get the service name based on the link
+    function getServiceName(link) {
+        const href = link.attr('href');
+        if (href.includes('facebook')) {
+            return 'Facebook';
+        } else if (href.includes('linkedin')) {
+            return 'LinkedIn';
+        } else if (href.includes('telegram')) {
+            return 'Telegram';
+        }  else if (href.includes('github')) {
+            return 'Github';
+        }
+        return '';
+    }
+
+
 });

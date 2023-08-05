@@ -1,2 +1,66 @@
-My home page.
+<script src="/js/home.js"></script>
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div>
+        <div id="rowOne" class="active-row scrolling-row row">
+            <div id="homeText" class="col-md-8">
+                <!-- First row text -->
+                <p>
+                    This page will be my constantly evolving portfolio page. It's primary use is to demonstrated my skills, education, and personality.
+                </p>
+                <p>
+                    I'm developing it as a boilerplate turnkey solution. Over time I'll be adding more features and functionality. I hope to also use it to hose tools to assist in civic engagement.
+                </p>
+            </div>
+            <div id="homeImg" class="col-md-4">
+                <!-- Image for the 20% right column in Row 1 -->
+                <img src="/img/gitHubScreenshot.png" alt="A screenshot of my github page." class="img-fluid">
+            </div>
+        </div>
 
+        <div id="rowTwo" class="scrolling-row row">
+            <div id="homeImg" class="col-md-4">
+                <!-- Image for the 20% left column in Row 2 -->
+                <img src="/img/aboutScreenshot.png" alt="Screenshot of the about page." class="img-fluid">
+            </div>
+            <div id="homeText" class="col-md-8">
+                <!-- Second row text -->
+                <p>
+                    This little set of paragraphs allows for adding information in a way that should be easier and easier to manipulate.
+                </p>
+                <p>
+                    I still need to do a lot of refactoring and general cleanup, but I'm happy with the progress so far. There's a little GitHub link on the right if you want to see other examples of my code.
+                </p>
+                <p>
+                    You may notice this page is basically identical to the about page. What I'd like to do is make little template pages like this that are easy to implement and customize. Not that copy/pasting is hard, but it'd be nice to have it a bit more refined.
+                </p>
+            </div>
+        </div>
+
+        <div id="rowThree" class="scrolling-row row">
+            <div id="homeText" class="col-md-8">
+                <!-- Third row text -->
+                <p>
+                    I'm using bootstrap, font awesome, and jQuery for this page. There's some custom code you can take a look at if you want at the same GitHub mentioned earlier.
+                </p>
+                <p>
+                    I've built the site out as a node.js app, and it currently stores some data in a SQLite database - that will need to be updated to use a standard SQL server. I also plan on using MongoDB for for some of the content that will eventually be displayed.
+                </p>
+                <p>
+                    I will also need a way to manage the content. Some sort of admin page, and a way to manage users. I know there's plenty of existing solutions out there, but I do plan on building it out on my own as much as possible.
+                </p>
+            </div>
+            <div id="homeImg" class="col-md-4">
+                <!-- Image for the 20% right column in Row 3 -->
+                <img src="/img/vscodeScreenshot.png" alt="Bar chart of letter frequency in 5 letter words."
+                    class="img-fluid">
+            </div>
+        </div>
+        <div class="pagination-links">
+            <a href="#" class="pagination-link active" data-target="rowOne">1</a>
+            <a href="#" class="pagination-link" data-target="rowTwo">2</a>
+            <a href="#" class="pagination-link" data-target="rowThree">3</a>
+            
+        </div>
+    </div>
+   
+</div>

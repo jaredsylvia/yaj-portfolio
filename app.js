@@ -39,7 +39,7 @@ const partialsDirectory = path.join(__dirname, 'views/partials');
 const partialsFiles = fs.readdirSync(partialsDirectory);
 
 // Exclude specific files
-const excludedFiles = ['head.ejs', 'header.ejs', 'leftCol.ejs', 'rightCol.ejs', 'footer.ejs', 'entry.ejs'];
+const excludedFiles = ['head.ejs', 'header.ejs', 'leftCol.ejs', 'rightCol.ejs', 'footer.ejs', 'entry.ejs', 'product', 'service', 'home.ejs'];
 
 // Filter and transform the filenames
 const availablePages = partialsFiles
@@ -99,6 +99,14 @@ app.use(['/', '/:page'], indexController);
 // Route to display the full entry for a given ID
 const entryController = require('./controllers/entryController')(db, availablePages); // Pass db instead of db.db
 app.use('/entry', entryController);
+
+// Route to display the full entry for a given ID
+const productController = require('./controllers/productController')(db, availablePages); // Pass db instead of db.db
+app.use('/product', productController);
+
+// Route to display the full entry for a given ID
+const serviceController = require('./controllers/serviceController')(db, availablePages); // Pass db instead of db.db
+app.use('/service', serviceController);
 
 // Close the database connection and clear the weather interval on process exit
 process.on('exit', () => {
