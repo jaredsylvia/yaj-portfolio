@@ -144,3 +144,47 @@
 .dropdown-menu li {
     list-style: none;
 }
+
+
+/* Custom styles for the grid and buttons */
+.lightsOut-outer-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    margin-top: 20px; /* Add space from the top */
+}
+
+.lightsOut-header {
+    margin-bottom: 20px; /* Add spacing below header */
+}
+
+.lightsOut-form {
+    margin-top: 30px; /* Add spacing above form */
+}
+
+.lightsOut-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust this for spacing between rows */
+    align-items: center; /* Center items horizontally */
+}
+
+.lightsOut-row {
+    display: flex;
+    gap: 10px; /* Adjust this for spacing between columns */
+    justify-content: center; /* Center items horizontally */
+}
+
+.lightsOut-col {
+    flex-grow: 1;
+    text-align: center; /* Center the button */
+}
+
+.square-button {
+    width: 100%;
+    padding-top: 100%; /* Maintain square aspect ratio */
+    position: relative;
+    overflow: hidden; /* Hide overflow when button is resized */
+}
+
+

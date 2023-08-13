@@ -1,0 +1,38 @@
+<% const urlRows = req.query.rows; %>
+<% const urlCols = req.query.cols; %>
+<% const rows = urlRows ? parseInt(urlRows) : 6; %>
+<% const cols = urlCols ? parseInt(urlCols) : 6; %>
+<% const buttonSize = Math.min(100 / cols, 100 / rows); %>
+<script src="/js/lightsOut.js"></script>
+<div class="lightsOut-outer-container">
+    <div class="lightsOut-header">
+        <h2>Lights Out Grid</h2>
+        <p id="timer" class="text-muted mt-2">Timer: 00:00</p>
+        <p><button class="btn btn-primary" id="cheatButton">Cheat</button></p>
+    </div>
+    <div class="lightsOut-container">
+        <% for (let row = 0; row < rows; row++) { %>
+            <div class="lightsOut-row">
+                <% for (let col = 0; col < cols; col++) { %>
+                    <% const buttonId = `button-${row}-${col}`; %>
+                    <div class="lightsOut-col" style="flex-basis: <%= 100 / cols %>%; max-width: <%= buttonSize %>vw; max-height: <%= buttonSize %>vw;">
+                        <div id="<%= buttonId %>" class="square-button btn btn-secondary"></div>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+    <div class="lightsOut-form mt-4 d-flex justify-content-center">
+        <form class="form-inline" action="/lightsOut" method="GET">
+            <div class="form-group mr-2">
+                <label for="rows" class="mr-2">Rows:</label>
+                <input type="number" class="form-control" id="rows" name="rows" value="<%= rows %>">
+            </div>
+            <div class="form-group mr-2">
+                <label for="cols" class="mr-2">Columns:</label>
+                <input type="number" class="form-control" id="cols" name="cols" value="<%= cols %>">
+            </div>
+            <button type="submit" class="btn btn-primary">Update Grid</button>
+        </form>
+    </div>
+</div>

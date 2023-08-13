@@ -14,7 +14,7 @@ function displayMessage(message, alertLevel) {
 // display modal
 function showModal(title, message) {
     $('#generalModal .modal-title').text(title);
-    $('#generalModal .modal-body').text(message);
+    $('#generalModal .modal-body').html(message);
     $('#generalModal').modal('show');
 }
 
