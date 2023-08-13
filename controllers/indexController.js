@@ -22,6 +22,14 @@ module.exports = function (db, availablePages) {
         }
         let title = page.charAt(0).toUpperCase() + page.slice(1);
 
+        const urlRows = req.query.rows;
+        const urlCols = req.query.cols;
+        const rows = urlRows ? parseInt(urlRows) : 6;
+        const cols = urlCols ? parseInt(urlCols) : 6;
+    
+        const colFlexBasis = `calc(100% / ${cols})`;
+        const colPaddingBottom = `calc(100% / ${cols})`;
+
         try {
             // Retrieve all entries from the database using the model's getAll function
             const entries = await formDataModel.getAll();
@@ -39,7 +47,8 @@ module.exports = function (db, availablePages) {
                 interests: interests,
                 page: page,
                 availablePages: availablePages,
-                weatherData: weatherData
+                weatherData: weatherData,
+                req: req
             });
         } catch (err) {
             console.error('Error retrieving entries from the database:', err);
