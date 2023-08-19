@@ -25,6 +25,10 @@
     color: white;
 }
 
+#body {
+    margin-top: 2%;
+}
+
 #knightSnake {
     width: 85%;
     height: auto;
@@ -145,46 +149,77 @@
     list-style: none;
 }
 
-
 /* Custom styles for the grid and buttons */
 .lightsOut-outer-container {
     display: flex;
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
-    margin-top: 20px; /* Add space from the top */
+    flex-direction: column; 
+    align-items: center; 
+    margin-top: 20px; 
 }
 
 .lightsOut-header {
-    margin-bottom: 20px; /* Add spacing below header */
+    margin-bottom: 20px; 
 }
 
 .lightsOut-form {
-    margin-top: 30px; /* Add spacing above form */
+    margin-top: 30px; 
 }
 
 .lightsOut-container {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Adjust this for spacing between rows */
-    align-items: center; /* Center items horizontally */
+    gap: 10px; 
+    align-items: center; 
 }
 
 .lightsOut-row {
     display: flex;
-    gap: 10px; /* Adjust this for spacing between columns */
-    justify-content: center; /* Center items horizontally */
+    gap: 10px; 
+    justify-content: center; 
 }
 
 .lightsOut-col {
     flex-grow: 1;
-    text-align: center; /* Center the button */
+    text-align: center; /
 }
 
 .square-button {
     width: 100%;
-    padding-top: 100%; /* Maintain square aspect ratio */
+    padding-top: 100%; 
     position: relative;
-    overflow: hidden; /* Hide overflow when button is resized */
+    overflow: hidden; 
 }
 
 
+/* Master Mind */
+
+.circle,
+.feedback-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: gray; /* Default color */
+    cursor: pointer;
+}
+
+.mastermind-playfield,
+.feedback-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #333; 
+    padding: 20px;
+    margin: 2%;
+}
+
+.green {
+    background-color: green; /* Change to your desired shade of green */
+}
+
+.yellow {
+    background-color: yellow; /* Change to your desired shade of yellow */
+}
+
+.red {
+    background-color: red; /* Change to your desired shade of red */
+}

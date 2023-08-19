@@ -1,0 +1,20 @@
+<script src="/js/masterMind.js"></script>
+<div class="row mastermind-playfield guess-area">
+    <div class='row mastermind-playfield guess-row guess-active'>
+        <% for (let i=0; i < 5; i++) { %>
+            <div class="col-2 mb-3">
+                <div class="circle" id="circle<%= i %>"></div>
+            </div>
+            <% } %>
+                <div class="col-2 guessButton"><button class="btn btn-primary" id="submitBtn">Guess</button></div>
+    </div>
+</div>
+<div class="row mastermind-playfield feedback-area">
+    <% for (let i=0; i < 5; i++) { %>
+        <div class="col-2 mb-3">
+            <div class="feedback-circle"></div>
+        </div>
+        <% } %>
+            <div class="col-2 resetButton" id="resetButton"><button class="btn btn-primary" id="resetBtn">Clear</button>
+            </div>
+</div>
