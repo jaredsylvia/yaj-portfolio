@@ -40,8 +40,8 @@ const config = {
 const game = new Phaser.Game(config);
 
 function preload() {
-    this.load.image('background', 'assets/map.png');
-    this.load.spritesheet('knight', 'assets/knight.png', { frameWidth: 16, frameHeight: 32 });
+    this.load.image('background', '/assets/map.png');
+    this.load.spritesheet('knight', '/assets/knight.png', { frameWidth: 16, frameHeight: 32 });
     
 }
 

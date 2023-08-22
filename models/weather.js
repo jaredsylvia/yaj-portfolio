@@ -44,71 +44,50 @@ class Weather {
         });
     }
 
-    insertWeatherData(weatherData) {
-        return new Promise((resolve, reject) => {
-            const {
-                temperature,
-                conditions,
-                highTemperature,
-                lowTemperature,
-                hourlyForecast,
-            } = weatherData;
+    async insertWeatherData(weatherData) {
+        const {
+            temperature,
+            conditions,
+            highTemperature,
+            lowTemperature,
+            hourlyForecast,
+        } = weatherData;
 
-            db.run(
-                'INSERT INTO weatherData (temperature, conditions, highTemperature, lowTemperature, forecastHourly) VALUES (?, ?, ?, ?, ?)',
-                [
-                    temperature,
-                    conditions,
-                    highTemperature,
-                    lowTemperature,
-                    JSON.stringify(hourlyForecast),
-                ],
-                function (error) {
-                    if (error) {
-                        console.error(
-                            'Error inserting weather data into the database:',
-                            error
-                        );
-                        reject(error);
-                    } else {
-                        console.log('Weather data inserted successfully.');
-                        resolve();
-                    }
-                }
-            );
-        });
+        try {
+            const insertQuery = 'INSERT INTO weatherData (temperature, conditions, highTemperature, lowTemperature, forecastHourly) VALUES (?, ?, ?, ?, ?)';
+            const insertValues = [temperature, conditions, highTemperature, lowTemperature, JSON.stringify(hourlyForecast)];
+
+            await db.promise().query(insertQuery, insertValues);
+            console.log('Weather data inserted successfully.');
+        } catch (error) {
+            console.error('Error inserting weather data into the database:', error);
+            throw error;
+        }
     }
 
-    getCurrentWeather() {
-        return new Promise((resolve, reject) => {
-            db.get(
-                `SELECT * FROM weatherData ORDER BY time DESC LIMIT 1`,
-                function (error, row) {
-                    if (error) {
-                        console.error(
-                            'Error retrieving weather data from the database:',
-                            error
-                        );
-                        reject(error);
-                    } else {
-                        if (row) {
-                            const weatherData = {
-                                temperature: row.temperature,
-                                conditions: row.conditions,
-                                highTemperature: row.highTemperature,
-                                lowTemperature: row.lowTemperature,
-                                hourlyForecast: JSON.parse(row.forecastHourly),
-                            };
-                            resolve(weatherData);
-                        } else {
-                            resolve(null);
-                        }
-                    }
-                }
-            );
-        });
-    }
+    async getCurrentWeather() {
+        try {
+            const query = 'SELECT * FROM weatherData ORDER BY time DESC LIMIT 1';
+            const [rows] = await db.promise().query(query);
 
+            if (rows.length > 0) {
+                const row = rows[0];
+                const weatherData = {
+                    temperature: row.temperature,
+                    conditions: row.conditions,
+                    highTemperature: row.highTemperature,
+                    lowTemperature: row.lowTemperature,
+                    hourlyForecast: JSON.parse(row.forecastHourly),
+                };
+                return weatherData;
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error('Error retrieving weather data from the database:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = Weather;

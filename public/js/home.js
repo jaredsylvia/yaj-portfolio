@@ -33,8 +33,8 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
-    $('#myPicture').hover(function() {
-        $( "#myPicture" ).toggle( "bounce", { times: 3 }, "slow" );
+    $('#rightColPic').click(function() {
+        $( "#rightColPic" ).toggle( "bounce", { times: 3 }, "slow" );
         });
 
 });

@@ -8,7 +8,7 @@
     <div class="lightsOut-header">
         <h2>Lights Out Grid</h2>
         <p id="timer" class="text-muted mt-2">Timer: 00:00</p>
-        <p><button class="btn btn-primary" id="cheatButton">Cheat</button></p>
+        
     </div>
     <div class="lightsOut-container">
         <% for (let row = 0; row < rows; row++) { %>
@@ -23,7 +23,7 @@
         <% } %>
     </div>
     <div class="lightsOut-form mt-4 d-flex justify-content-center">
-        <form class="form-inline" action="/lightsOut" method="GET">
+        <form class="form-inline" action="/games/lightsOut" method="GET">
             <div class="form-group mr-2">
                 <label for="rows" class="mr-2">Rows:</label>
                 <input type="number" class="form-control" id="rows" name="rows" value="<%= rows %>">

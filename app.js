@@ -8,58 +8,48 @@ const path = require('path');
 const { db, createTables } = require('./models/db');
 const Interests = require('./models/interests');
 const Weather = require('./models/weather');
+const cookieParser = require('cookie-parser');
 
 // Create an instance of the Weather model
 const weatherModel = new Weather();
 
-// Retrieve and insert weather immediately
-weatherModel
-    .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
-    .then((weatherData) => weatherModel.insertWeatherData(weatherData))
-    .then(() => {
-        // Schedule weather retrieval and insertion every 10 minutes after the initial insertion
-        setInterval(() => {
-            weatherModel
-                .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
-                .then((weatherData) => weatherModel.insertWeatherData(weatherData))
-                .catch((error) => {
-                    console.error('Error retrieving and inserting weather data:', error);
-                });
-        }, 10 * 60 * 1000);
-    })
-    .catch((error) => {
-        console.error('Error retrieving and inserting initial weather data:', error);
-    });
-
-
 // Set the path to the partials directory
 const partialsDirectory = path.join(__dirname, 'views/partials');
 
-// Get the list of files in the partials directory
-const partialsFiles = fs.readdirSync(partialsDirectory);
+// Get the list of subdirectories in the partials directory
+const subdirectories = fs.readdirSync(partialsDirectory, { withFileTypes: true })
+    .filter(item => item.isDirectory())
+    .map(item => item.name);
 
-// Exclude specific files
-const excludedFiles = ['head.ejs', 'header.ejs', 'leftCol.ejs', 'rightCol.ejs', 'footer.ejs', 'entry.ejs', 'product', 'service', 'home.ejs'];
+// Initialize array to store available pages
+const availablePages = [];
 
-// Filter and transform the filenames
-const availablePages = partialsFiles
-    .filter(file => !excludedFiles.includes(file))
-    .map(file => {
-        const partialName = file.replace('.ejs', '');
-        let transformedName = partialName.charAt(0).toUpperCase() + partialName.slice(1);
+// Iterate through subdirectories and files within them
+subdirectories.forEach(subdir => {
+    const subdirPath = path.join(partialsDirectory, subdir);
+    const filesInSubdir = fs.readdirSync(subdirPath)
+        .filter(file => file.endsWith('.ejs'));
 
-        // Check for camelCase in the name
-        if (transformedName.match(/[A-Z][a-z]+/g)) {
-            // Convert camelCase to two words
-            transformedName = transformedName.replace(/([a-z])([A-Z])/g, '$1 $2');
+    filesInSubdir.forEach(file => {
+        const categoryName = subdir;
+        const pageName = file.replace('.ejs', '');
+
+        let transformedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
+
+        if (transformedPageName.match(/[A-Z][a-z]+/g)) {
+            transformedPageName = transformedPageName.replace(/([a-z])([A-Z])/g, '$1 $2');
         }
 
-        return transformedName;
+        availablePages.push({ category: categoryName, page: transformedPageName });
     });
+});
+
+console.log(availablePages);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -83,6 +73,25 @@ createTables(() => {
                 console.error(`Error inserting interest "${interest}":`, error);
             }
         }
+
+        // Insert initial weather data after interests are inserted
+        weatherModel
+            .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
+            .then((weatherData) => weatherModel.insertWeatherData(weatherData))
+            .then(() => {
+                // Schedule weather retrieval and insertion every 10 minutes after the initial insertion
+                setInterval(() => {
+                    weatherModel
+                        .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
+                        .then((weatherData) => weatherModel.insertWeatherData(weatherData))
+                        .catch((error) => {
+                            console.error('Error retrieving and inserting weather data:', error);
+                        });
+                }, 10 * 60 * 1000);
+            })
+            .catch((error) => {
+                console.error('Error retrieving and inserting initial weather data:', error);
+            });
     };
 
     insertInterests();
@@ -92,21 +101,13 @@ createTables(() => {
 const submitController = require('./controllers/submitController')(db, availablePages); // Pass db instead of db.db
 app.use('/submit', submitController);
 
+// Route to user endpoints
+const userController = require('./controllers/userController')(db); 
+app.use('/users', userController);
+
 // Routes
 const indexController = require('./controllers/indexController')(db, availablePages); // Pass db instead of db.db
-app.use(['/', '/:page'], indexController);
-
-// Route to display the full entry for a given ID
-const entryController = require('./controllers/entryController')(db, availablePages); // Pass db instead of db.db
-app.use('/entry', entryController);
-
-// Route to display the full entry for a given ID
-const productController = require('./controllers/productController')(db, availablePages); // Pass db instead of db.db
-app.use('/product', productController);
-
-// Route to display the full entry for a given ID
-const serviceController = require('./controllers/serviceController')(db, availablePages); // Pass db instead of db.db
-app.use('/service', serviceController);
+app.use(['/', '/:category', '/:page'], indexController);
 
 // Close the database connection and clear the weather interval on process exit
 process.on('exit', () => {

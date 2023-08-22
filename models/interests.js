@@ -1,63 +1,65 @@
 class Interests {
-    constructor(db) {
+  constructor(db) {
       this.db = db;
-    }
-  
-    getAll() {
-      return new Promise((resolve, reject) => {
-        this.db.all('SELECT * FROM interests', (err, rows) => {
-          if (err) {
-            console.error('Error retrieving interests from the database:', err);
-            reject(err);
-          } else {
-            resolve(rows);
-          }
-        });
-      });
-    }
-  
-    getById(id) {
-      return new Promise((resolve, reject) => {
-        this.db.get('SELECT * FROM interests WHERE id = ?', [id], (err, row) => {
-          if (err) {
-            console.error('Error retrieving interest from the database:', err);
-            reject(err);
-          } else {
-            resolve(row);
-          }
-        });
-      });
-    }
-
-    getByName(name) {
-        return new Promise((resolve, reject) => {
-          this.db.get('SELECT * FROM interests WHERE name = ?', [name], (err, row) => {
-            if (err) {
-              console.error('Error retrieving interest from the database:', err);
-              reject(err);
-            } else {
-              resolve(row);
-            }
-          });
-        });
-      }
-  
-    addInterest(name) {
-      return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO interests (name) VALUES (?)';
-        const values = [name];
-  
-        this.db.run(query, values, function (err) {
-          if (err) {
-            console.error('Error adding interest to the database:', err);
-            reject(err);
-          } else {
-            resolve(this.lastID);
-          }
-        });
-      });
-    }
   }
-  
-  module.exports = Interests;
-  
+
+  getAll() {
+      return new Promise((resolve, reject) => {
+          const query = 'SELECT * FROM interests';
+          this.db.query(query, (err, rows) => {
+              if (err) {
+                  console.error('Error retrieving interests from the database:', err);
+                  reject(err);
+              } else {
+                  resolve(rows);
+              }
+          });
+      });
+  }
+
+  getById(id) {
+      return new Promise((resolve, reject) => {
+          const query = 'SELECT * FROM interests WHERE id = ?';
+          this.db.query(query, [id], (err, rows) => {
+              if (err) {
+                  console.error('Error retrieving interest from the database:', err);
+                  reject(err);
+              } else {
+                  resolve(rows[0]);
+              }
+          });
+      });
+  }
+
+  getByName(name) {
+      return new Promise((resolve, reject) => {
+          const query = 'SELECT * FROM interests WHERE name = ?';
+          this.db.query(query, [name], (err, rows) => {
+              if (err) {
+                  console.error('Error retrieving interest from the database:', err);
+                  reject(err);
+              } else {
+                  resolve(rows[0]);
+              }
+          });
+      });
+  }
+
+  addInterest(name) {
+      return new Promise((resolve, reject) => {
+          const query = 'INSERT INTO interests (name) VALUES (?)';
+          const values = [name];
+
+          this.db.query(query, values, (err, result) => {
+              if (err) {
+                  console.error('Error adding interest to the database:', err);
+                  reject(err);
+              } else {
+                  resolve(result.insertId);
+              }
+          });
+      });
+  }
+}
+
+module.exports = Interests;

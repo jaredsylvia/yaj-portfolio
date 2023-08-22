@@ -7,7 +7,7 @@ $(document).ready(function () {
     updateGuessButtonLabel(); // Update guess button label
 
     $("#submitBtn").click(function () {
-        
+
         mainGuess();
     });
 
@@ -18,14 +18,14 @@ $(document).ready(function () {
     // Function that processes the full game logic, triggered by cliking the guess button
     function mainGuess() {
         const guesses = []; // Array to store the player's guessed colors
-        
+
         // Collect the guessed colors
         $(".mastermind-playfield .guess-active .circle").each(function () {
             const guessedColor = $(this).data("color");
             const guessedColorIndex = colors.indexOf(guessedColor);
             guesses.push(guessedColorIndex); // Store color index as number
         });
-        
+
         const feedback = checkGuess(guesses, solution);
         updateFeedbackVisuals(feedback); // Update the feedback row with the new feedback
 
@@ -73,6 +73,11 @@ $(document).ready(function () {
         $("#submitBtn").click(function () {
             mainGuess();
         });
+        // Scroll to the bottom of the "content" div without animation
+        const contentDiv = $(".content");
+        contentDiv.scrollTop(contentDiv.prop("scrollHeight"));
+
+
     }
 
     // Function to update the guess button label
@@ -93,7 +98,7 @@ $(document).ready(function () {
     // Function to check the guessed pattern against the solution
     function checkGuess(guesses, solution) {
         const feedbackArray = [];
-        
+
 
         // Convert solution string to an array of numbers
         const solutionArray = solution.split('').map(Number);
@@ -128,13 +133,13 @@ $(document).ready(function () {
 
     // Function to update the feedback circles with new feedback
     function updateFeedbackVisuals(feedback) {
-        
+
         const feedbackCircles = $(".feedback-circle"); // Select existing feedback circles
-        
+
         for (let i = 0; i < 5; i++) {
             const feedbackDigit = Math.floor(feedback / Math.pow(10, 4 - i)) % 10;
             const feedbackCircle = $(feedbackCircles[i]); // Get the specific feedback circle
-        
+
             feedbackCircle.removeClass("green yellow red"); // Remove previous classes
 
             switch (feedbackDigit) {
@@ -146,7 +151,7 @@ $(document).ready(function () {
                     break;
                 case 1:
                     feedbackCircle.addClass("red"); // Add red class
-                    
+
                     break;
                 default:
                     break;

@@ -1,65 +1,88 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dkcyan">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="/home">
+			<img src="/img/yajlogo.png" alt="Yet Another Jared Logo" class="logo img-fluid">
 			<%= pageTitle %>
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#headerNavbar"
-            aria-controls="headerNavbar" aria-expanded="false" aria-label="Toggle navigation">
+			aria-controls="headerNavbar" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="headerNavbar">
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<% availablePages.forEach(availablePage => {
-                  const hrefValue = availablePage.replace(/\s+/g, ''); // two-word to one.
-                  const lowercaseFirstLetter = hrefValue.charAt(0).toLowerCase() + hrefValue.slice(1);
-                %>
-				<li class="nav-item">
-					<a class="nav-link active"
-						<%= lowercaseFirstLetter === page.toLowerCase() ? 'fw-bold' : '' %>" aria-current="page" href="/<%= lowercaseFirstLetter %>">
-						<%= availablePage %>
-					</a>
-				</li>
+
+				<% const categories = [...new Set(availablePages.map(item => item.category))]; %>
+				<% categories.forEach(category => { %>
+					<% if (category !== 'admin' || isAdmin) { %>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown<%= category %>"
+								role="button" data-bs-toggle="dropdown" data-bs-auto-close="false"
+								aria-expanded="false">
+								<%= category.charAt(0).toUpperCase() + category.slice(1) %>
+							</a>
+							<ul class="dropdown-menu" aria-labelledby="navbarDropdown<%= category %>">
+								<% availablePages.filter(item => item.category === category).forEach(subpage => { %>
+									<% const subpageName = subpage.page.split(' ').map((word, index) => {
+										if (index === 0) {
+											return word.toLowerCase();
+										} else {
+											return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+										}
+									}).join('');
+									const subpageLink = `/${category}/${subpageName}`;
+									%>
+									<li><a class="dropdown-item" href="<%= subpageLink %>"><%= subpage.page %></a></li>
+								<% }) %>
+							</ul>
+						</li>
+					<% } %>
 				<% }) %>
-
-				<!-- nested drop down -->
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
-						data-bs-toggle="dropdown" data-bs-auto-close="false" aria-expanded="false">
-						Product
-					</a>
-					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<li class="dropdown-submenu-toggle">
-							<a class="dropdown-item dropdown-toggle dropdown-custom" href="#jobHistorySubmenu" data-bs-toggle="collapse"
-							   data-bs-auto-close="false">Product</a>
-							<ul class="collapse dropdown-submenu " id="jobHistorySubmenu">
-								<li><a class="dropdown-item" href="/product/gallery">Product Gallery</a></li>
-								<li><a class="dropdown-item" href="/product/details">Product Details</a></li>
-							</ul>
-						</li>
-						<li class="dropdown-submenu-toggle">
-							<a class="dropdown-item dropdown-toggle dropdown-custom" href="#serviceMenu" data-bs-toggle="collapse"
-							   data-bs-auto-close="false">Service</a>
-							<ul class="collapse dropdown-submenu" id="serviceMenu">
-								<li><a class="dropdown-item" href="/service/overview">Service Overview</a></li>
-								<li><a class="dropdown-item" href="/service/detail">Service Detail</a></li>
-							</ul>
-						</li>
-					</ul>
-				</li>
 				
-				
-
+								
+		<% if (userName) { %>
+			<li class="nav-item">
+				<a class="nav-link active" href="/users/logout">Logout</a>
+			</li>
+		<% } %>
+    
 
 			</ul>
+			<div class="service-name"></div>
+			<div class="social-links">
+
+				<a href="https://www.facebook.com/joeerror" target="_blank" rel="noopener"
+					class="btn btn-primary btn-lg social-link">
+					<i class="fab fa-facebook-f "></i>
+				</a>
 			
-
-			<div class="navbar-text" id="weatherDisplay">
-				<div class="weather-icon">
-					<i id="weatherIcon" class="" data-bs-toggle="tooltip" data-bs-placement="top" title=""></i>
-				</div>
-				<p class="temperature" id="temperature"></p>
+				<a href="https://www.linkedin.com/in/jaredsylvia" target="_blank" rel="noopener"
+					class="btn btn-primary btn-lg social-link">
+					<i class="fab fa-linkedin "></i>
+				</a>
+			
+				<a href="https://t.me/joeerror" target="_blank" rel="noopener" class="btn btn-primary btn-lg social-link">
+					<i class="fab fa-telegram-plane "></i>
+				</a>
+			
+				<a href="https://www.github.com/jaredsylvia" target="_blank" rel="noopener"
+					class="btn btn-primary btn-lg social-link">
+					<i class="fab fa-github"></i>
+				</a>
+			
+				<a href="mailto:jaredsylvia+yaj@gmail.com?subject=Hello" target="_blank" rel="noopener"
+					class="btn btn-primary btn-lg social-link">
+					<i class="fas fa-envelope "></i>
+				</a>
+				<a href="tel:925-452-7331" target="_blank" rel="noopener" class="btn btn-primary btn-lg social-link">
+					<i class="fas fa-phone "></i>
+				</a>
 			</div>
-
-
+			<div class="navbar-text weatherDisplay">
+				<div class="weather-icon">
+					<i id="weatherIcon" class="" data-bs-toggle="tooltip" data-bs-placement="left" title=""></i>
+				</div>
+				<p class="temperature"></p>
+			</div>
 		</div>
-	</nav>
+	</div>
+</nav>

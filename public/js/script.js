@@ -53,23 +53,33 @@ $(document).ready(function () {
         // Extract relevant weather information
         var condition = weatherData.conditions;
         var temperatureValue = weatherData.temperature;
+        var highTemperature = weatherData.highTemperature;
+        var lowTemperature = weatherData.lowTemperature;
 
         // Set the weather icon and tooltip
         if (condition in weatherIcons) {
             var weatherIcon = $('#weatherIcon');
             weatherIcon.removeClass().addClass(weatherIcons[condition]);
-            weatherIcon.attr('title', temperatureValue + ' \u00B0');
-            var tooltip = new bootstrap.Tooltip(weatherIcon[0]);
+
+            // Update the tooltip with the desired content
+            var tooltipContent = `
+            <strong>${temperatureValue} °C</strong><br>
+            High: ${highTemperature} °C<br>
+            Low: ${lowTemperature} °C<br>
+            Conditions: ${condition}`;
+
+            weatherIcon.attr('title', tooltipContent);
+
+            // Initialize the Bootstrap Tooltip
+            var tooltip = new bootstrap.Tooltip(weatherIcon[0], {
+                placement: 'top',
+                html: true // Enable HTML content in the tooltip
+            });
         } else {
             // If the condition is not found in the mapping, fallback to a default icon
             $('#weatherIcon').removeClass().addClass('bi bi-question');
         }
     }
-
-
-  
-
-
     // Hover listener for social links
     $('.social-link').hover(
         function () {
@@ -88,7 +98,6 @@ $(document).ready(function () {
         }
     );
 
-
     // Function to get the service name based on the link
     function getServiceName(link) {
         const href = link.attr('href');
@@ -96,13 +105,31 @@ $(document).ready(function () {
             return 'Facebook';
         } else if (href.includes('linkedin')) {
             return 'LinkedIn';
-        } else if (href.includes('telegram')) {
+        } else if (href.includes('t.me')) {
             return 'Telegram';
-        }  else if (href.includes('github')) {
+        } else if (href.includes('github')) {
             return 'Github';
+        } else if (href.includes('mailto')) {
+            return 'Email';
+        } else if (href.includes('tel')) {
+            return 'Phone';
         }
         return '';
     }
 
+    $(document).on('click', '.dropdown-toggle', function () {
+        // Close all open dropdown menus except the one being clicked
+        $('.dropdown-menu').not($(this).siblings('.dropdown-menu')).removeClass('show');
+    });
+
+    $(document).on('click', function (event) {
+        const target = $(event.target);
+
+        // Check if the clicked element is a dropdown-toggle or within a dropdown-menu
+        if (!target.hasClass('dropdown-toggle') && target.closest('.dropdown-menu').length === 0) {
+            // Close all open dropdown menus
+            $('.dropdown-menu').removeClass('show');
+        }
+    });
 
 });

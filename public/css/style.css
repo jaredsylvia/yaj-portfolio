@@ -1,76 +1,125 @@
-.header,
-.footer {
+/* Primary Stylesheet */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; 
+    background-color: #333;
+}
+
+:root {
+    --landscape-max-width: 70%; 
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0 auto; 
+    max-width: 100%; 
+}
+
+.header {
     background-color: darkcyan;
-
-}
-
-.leftCol,
-.rightCol {
-    background-color: darkgray;
-}
-
-
-
-
-.bg-dkcyan {
-    background-color: darkcyan;
-
-}
-
-.bg-dkgray {
-    background-color: darkgray;
-}
-
-.font-white {
+    padding: 10px;
     color: white;
 }
 
-#body {
-    margin-top: 2%;
+.logo {
+    max-height: 75px;
 }
 
+.content {
+    background-color: darkgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: scroll; /* Allow vertical scrolling */
+    flex-grow: 1; /* Expand to fill available space */
+}
+
+.footer {
+    background-color: darkcyan;
+    padding: 10px;
+    color: white;
+}
+
+/* Media Query for landscape views */
+@media screen and (orientation: landscape) {
+    .container {
+        max-width: var(--landscape-max-width); /* Adjust width for landscape orientation */
+    }
+}
+
+/* Media Query for dynamically adjusting landscape width */
+@media screen and (max-width: 1440px) {
+    :root {
+        --landscape-max-width: calc(70% + 10% * ((100vw - 769px) / (1440 - 769))); /* Adjust width range for landscape */
+    }
+}
+
+/* Table Styles */
+.table-dkcyan:hover {
+    cursor: pointer;
+}
+.table-dkcyan > thead {
+    background-color: #333;
+    color: white;
+ }
+
+.table-dkcyan > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+    background-color: darkcyan;
+    color: white;
+ }
+
+ .table-dkcyan > tbody > tr:nth-child(even) > td, .table-striped > tbody > tr:nth-child(even) > th {
+    background-color: #333;
+    color: white;
+ }
+
+ .table-dkcyan > tbody >  tr:hover:nth-child(even) > td, .table-hover > tbody > tr:hover > th {
+    filter: drop-shadow(0 0 0.75rem black);
+  }
+
+  .table-dkcyan > tbody >  tr:hover:nth-child(odd) > td, .table-hover > tbody > tr:hover > th {
+    filter: drop-shadow(0 0 0.75rem darkcyan);
+  }
+
+  /* Knight Snake */
 #knightSnake {
     width: 85%;
     height: auto;
     margin: 0 auto;
     padding: 10px;
-    position: relative;
     justify-content: center;
 }
 
-#weatherDisplay {
+#assetLinks {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
-.weather-icon {
+#assetLinks a {
     margin-right: 10px;
+    margin-bottom: 10px;
 }
 
-#weatherIcon {
-    font-size: 32px;
-    line-height: 1;
-}
-
-.temperature {
-    text-align: center;
-}
-
-#temperature {
-    font-size: 12px;
-    margin: 0;
-    text-align: center;
-}
-
+/* Horizontal Scrolling Objects (about page) */
 .scrolling-row {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.3s ease, transform 0.3s ease;
+    display: flex;
 }
 
 .scrolling-row.active-row {
     opacity: 1;
     transform: translateY(0);
+    flex-direction: row;
 }
 
 .scrolling-row.active-row #homeText {
@@ -79,8 +128,9 @@
     border-radius: 25px;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: center;
+    
 }
 
 .pagination-links {
@@ -102,6 +152,11 @@
     border-color: #007bff;
 }
 
+.aboutContainer {
+    width: 80%;
+}
+
+/* Social Links */
 .social-link {
     background-color: transparent;
     border: 2px solid transparent;
@@ -109,8 +164,21 @@
 
 .social-link:hover {
     background-color: transparent;
-    border: solid;
-    border-color: black;
+    border: 2px solid black;
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 5px;
+    padding: 5px;
+}
+
+.service-name-box {
+    min-height: 50px;
 }
 
 #socialLinks {
@@ -122,6 +190,7 @@
     padding: 5px;
 }
 
+/* Image Gallery */
 .gallery-container {
     display: flex;
     justify-content: center;
@@ -144,82 +213,111 @@
     filter: sepia(100%);
 }
 
-
+/* Nav Bar */
 .dropdown-menu li {
     list-style: none;
+}
+
+/* Weather */
+.weatherDisplay {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    font-size: 32px;
+    line-height: 1;
+}
+
+.temperature {
+    text-align: center;
+    font-size: 12px;
+    margin: 0;
+    text-align: center;
 }
 
 /* Custom styles for the grid and buttons */
 .lightsOut-outer-container {
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    margin-top: 20px; 
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .lightsOut-header {
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
 .lightsOut-form {
-    margin-top: 30px; 
+    margin-top: 30px;
 }
 
 .lightsOut-container {
     display: flex;
     flex-direction: column;
-    gap: 10px; 
-    align-items: center; 
+    gap: 10px;
+    align-items: center;
 }
 
 .lightsOut-row {
     display: flex;
-    gap: 10px; 
-    justify-content: center; 
+    gap: 10px;
+    justify-content: center;
 }
 
 .lightsOut-col {
     flex-grow: 1;
-    text-align: center; /
+    text-align: center;/
 }
 
 .square-button {
     width: 100%;
-    padding-top: 100%; 
+    padding-top: 100%;
     position: relative;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 
 /* Master Mind */
-
 .circle,
 .feedback-circle {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: gray; /* Default color */
+    background-color: gray;
+    /* Default color */
     cursor: pointer;
 }
 
 .mastermind-playfield,
 .feedback-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
-    background-color: #333; 
+    background-color: #333;
     padding: 20px;
     margin: 2%;
 }
 
+.guess-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
 .green {
-    background-color: green; /* Change to your desired shade of green */
+    background-color: green;
+    
 }
 
 .yellow {
-    background-color: yellow; /* Change to your desired shade of yellow */
+    background-color: yellow;
+    
 }
 
 .red {
-    background-color: red; /* Change to your desired shade of red */
+    background-color: red;
+    
 }
+
+
