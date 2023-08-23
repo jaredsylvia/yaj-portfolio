@@ -321,3 +321,35 @@ body, html {
 }
 
 
+/* Error */
+.error-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    background-color: darkcyan;
+    border-radius: 25px;
+    padding: 2%;
+    border: black 2px solid;
+}
+
+.error-heading {
+    font-size: 96px;
+    font-variant-caps: all-petite-caps;
+}
+
+.error-subheading {
+    font-size: 48px;
+}
+
+.error-fineprint {
+    font-size: 24px;
+}
+
+.tiny {
+    font-size: 8px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}

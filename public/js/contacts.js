@@ -6,6 +6,11 @@ $(document).ready(function() {
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'email' },
+            { data: 'id',
+                render: function(data, type, row) {
+                    return '<button class="delete-button btn btn-secondary" data-entry-id="' + row.id + '">Delete</button>';
+                }
+            },
             { data: 'phone', visible: false }, // Hide phone column
             { data: 'message', visible: false } // Hide message column
         ],
@@ -35,5 +40,38 @@ $(document).ready(function() {
             '<strong>Email:</strong> ' + data.email + '<br>' +
             '<strong>Message:</strong> ' + data.message +
             '</div></div>';
+    }
+
+    // Handle delete button clicks
+    $('#entryTable').on('click', '.delete-button', function() {
+        var entryId = $(this).data('entry-id');
+        deleteEntry(entryId);
+    });
+
+    // Function to delete entry via AJAX
+    function deleteEntry(entryId) {
+        const confirmDelete = confirm("Do you really want to delete this entry?");
+
+        if (!confirmDelete) {
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/contacts/del', // Adjust the URL accordingly
+            headers: {
+                Authorization: 'Bearer ' + $.cookie('token')
+            },
+            data: JSON.stringify({ entryId: entryId }),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Entry deleted successfully.');
+                // Refresh the DataTable or update the data source
+                table.ajax.reload();
+            },
+            error: function(error) {
+                console.error('Error deleting entry:', error);
+            }
+        });
     }
 });

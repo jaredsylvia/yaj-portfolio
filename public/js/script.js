@@ -132,4 +132,26 @@ $(document).ready(function () {
         }
     });
 
+    // Function to animate text color change
+    function animateRainbowColors() {
+        const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+        let currentColorIndex = 0;
+
+        setInterval(() => {
+            $('.error-heading').animate({
+                color: colors[currentColorIndex]
+            }, 125); 
+
+            $('.tiny').animate({
+                color: colors[currentColorIndex]
+            }, 125);
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
+        }, 125);
+    }
+
+    // Check if the element with id "error-heading" exists
+    if ($('.error-heading').length > 0) {
+        animateRainbowColors();
+    }
+
 });

@@ -80,14 +80,52 @@ async function deleteUserById(userId) {
 // Function to edit user information
 async function editUser(userId, newUserData) {
     const { loginName, email, password, isAdmin } = newUserData;
-
+    console.log(newUserData);
+    console.log(isAdmin);
     // Hash the new password if provided
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
 
+    // Build the SQL query and parameters based on the provided fields
+    const updateFields = [];
+    const queryParams = [];
+
+    if (loginName !== undefined) {
+        updateFields.push('loginName = ?');
+        queryParams.push(loginName);
+    }
+
+    if (email !== undefined) {
+        updateFields.push('email = ?');
+        queryParams.push(email);
+    }
+
+    if (hashedPassword !== null) {
+        updateFields.push('password = ?');
+        queryParams.push(hashedPassword);
+    }
+
+    if (isAdmin !== undefined) {
+        updateFields.push('isAdmin = ?');
+        queryParams.push(isAdmin);
+    }
+
+    if(userId) {
+        queryParams.push(userId);
+    }
+
+    if (updateFields.length === 0) {
+        // No fields to update
+        return false;
+    }
+
+
+    console.log(queryParams);
+    const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+    console.log(updateQuery);
     return new Promise((resolve, reject) => {
         db.query(
-            'UPDATE users SET loginName = ?, email = ?, password = ?, isAdmin = ? WHERE id = ?',
-            [loginName, email, hashedPassword, isAdmin, userId],
+            updateQuery,
+            queryParams,
             (error, results) => {
                 if (error) {
                     reject(error);
@@ -98,6 +136,7 @@ async function editUser(userId, newUserData) {
         );
     });
 }
+
 
 // Function to get all users
 async function getAllUsers() {

@@ -18,7 +18,7 @@ module.exports = function (db, availablePages) {
             try {
                 // Verify the token and decode its payload
                 const decodedToken = jwt.verify(req.cookies.token, process.env.SECRET_KEY);
-                console.log(decodedToken);
+                
                 // Pass user info to the request object
                 req.isAdmin = decodedToken.isAdmin || false;
                 req.userName = decodedToken.userName || null;
@@ -32,8 +32,7 @@ module.exports = function (db, availablePages) {
             req.userName = null;
         }
         
-        console.log(req.userName);
-        console.log(req.headers.cookie);
+        
         // Continue to the next middleware or route
         next();
     });
@@ -44,27 +43,25 @@ module.exports = function (db, availablePages) {
         let page = req.params.page;
         let title;
         let status;
-        console.log('Category:', category);
-        console.log('Page:', page);
-        console.log('Available Pages:', availablePages);
-        
+                
         if (category == null) {
             category = false; // Set a default category if none is specified
         }
         
-        if (page != null) {
-            title = page.charAt(0).toUpperCase() + page.slice(1);
-        } else {
+        if (!availablePages.some(pageObj => pageObj.category === category) && category !== 'home' && category !== false) {
             title = '404';
-        }
-        if (category == false || page == null) {
             status = '404';
         } else {
+            if (category === 'home' || category === false) {
+                title = 'Home';
+            } else if (page != null) {
+                title = page.charAt(0).toUpperCase() + page.slice(1);
+            } else {
+                title = '404';
+            }
             status = '200';
         }
-        if (category === 'admin' && !req.isAdmin) {
-            return res.redirect('/home');
-        }
+
         const urlRows = req.query.rows;
         const urlCols = req.query.cols;
         const rows = urlRows ? parseInt(urlRows) : 6;
@@ -82,13 +79,13 @@ module.exports = function (db, availablePages) {
                 entries = await formDataModel.getAll();
                 users = await userModel.getAllUsers();
             }
-            console.log(entries);
+            
             // Retrieve all interests from the database using the interests model
             const interests = await interestsModel.getAll();
 
             // Retrieve the weather data
             const weatherData = await weatherModel.getCurrentWeather(); 
-            console.log(status);
+            
             res.status(status);
             res.render('pages/index', {
                 pageTitle: process.env.PAGE_TITLE,

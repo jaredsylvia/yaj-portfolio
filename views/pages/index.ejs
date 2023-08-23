@@ -19,8 +19,33 @@
                     <%- include(`../partials/${category}/${page}`); %>
                 <% } %>
             <% } catch (error) { %>
-                <h4>Resource <q><%= category ? '/' + category : '' %><%= page ? '/' + page : '' %></q> does not exist on this server.</h4>
-                <a href="/home" class="btn btn-dark">Return to Home</a>
+                <div class="error-container">
+                    <h1 class="error-heading">404</h1>
+                    <h2 class="error-subheading">Not Found</h2>
+                    <p class="error-fineprint">The requested <q><%= category ? '/' + category : '' %><%= page ? '/' + page : '' %></q> is not available on this server.</p>
+                    <a href="/home" class="btn btn-secondary" style="font-size: 24px;">Return to Home</a>
+                    <p class="tiny">Directed By<br>
+                        <br>
+                        40 SPECIALLY TRAINED
+                        ECUADORIAN MOUNTAIN LLAMAS
+                        <br>
+                        6 VENEZUELAN RED LLAMAS
+                        <br>
+                        142 MEXICAN WHOOPING LLAMAS
+                        <br>
+                        14 NORTH CHILEAN GUANACOS
+                        (CLOSELY RELATED TO THE LLAMA)
+                        <br>
+                        REG LLAMA OF BRIXTON
+                        <br>
+                        76000 BATTERY LLAMAS
+                        FROM "LLAMA-FRESH" FARMS LTD. NEAR PARAGUAY
+                        <br>
+                        and
+                        <br>
+                        TERRY GILLIAM & TERRY JONES</p>
+                </div>
+                
             <% } %>
 
             <div id="alertSpace"></div>

@@ -97,6 +97,10 @@ createTables(() => {
     insertInterests();
 });
 
+// API endpoitns
+const apiController = require('./controllers/apiController')(db);
+app.use('/api', apiController);
+
 // Form submission route
 const submitController = require('./controllers/submitController')(db, availablePages); // Pass db instead of db.db
 app.use('/submit', submitController);
