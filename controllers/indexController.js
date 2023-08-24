@@ -4,6 +4,7 @@ const router = express.Router();
 const FormData = require('../models/formData');
 const Interests = require('../models/interests');
 const Weather = require('../models/weather');
+const PostData = require('../models/postModel');
 const userModel = require('../models/user');
 const jwt = require('jsonwebtoken');
 
@@ -11,8 +12,11 @@ module.exports = function (db, availablePages) {
     const formDataModel = new FormData(db);
     const interestsModel = new Interests(db);
     const weatherModel = new Weather(); 
+    const postModel = new PostData(db);
+    
     
     router.use((req, res, next) => {
+        
         // Check if the token exists in the cookies
         if (req.cookies.token) {
             try {
@@ -78,6 +82,7 @@ module.exports = function (db, availablePages) {
                 // Retrieve all entries from the database using the model's getAll function
                 entries = await formDataModel.getAll();
                 users = await userModel.getAllUsers();
+                
             }
             
             // Retrieve all interests from the database using the interests model
@@ -86,6 +91,8 @@ module.exports = function (db, availablePages) {
             // Retrieve the weather data
             const weatherData = await weatherModel.getCurrentWeather(); 
             
+            const posts = await postModel.getAllPosts();
+
             res.status(status);
             res.render('pages/index', {
                 pageTitle: process.env.PAGE_TITLE,
@@ -99,6 +106,7 @@ module.exports = function (db, availablePages) {
                 weatherData: weatherData,
                 isAdmin: req.isAdmin,
                 userName: req.userName,
+                posts: posts,
                 req: req
             });
         } catch (err) {

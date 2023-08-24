@@ -10,6 +10,7 @@ const secretKey = process.env.SECRET_KEY;
 
 module.exports = function (db, availablePages) {
     const formDataModel = new FormData(db);
+    const postModel = new PostModel(db);
     
     function decodeJwt(req, res, next) {
         const authHeader = req.headers.authorization;
@@ -138,7 +139,7 @@ module.exports = function (db, availablePages) {
         if (!req.isAdmin) {
             return res.status(403).send('Forbidden');
         }
-
+        
         const contactIdToDelete = req.body.contactId;
 
         try {
@@ -164,7 +165,7 @@ module.exports = function (db, availablePages) {
         const { subject, body } = req.body;
 
         try {
-            const posted = await PostModel.createPost(subject, body);
+            const posted = await postModel.createPost(subject, body);
 
             if (posted) {
                 res.status(200).send('Post added successfully');

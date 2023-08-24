@@ -33,8 +33,9 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
-    $('#rightColPic').click(function() {
-        $( "#rightColPic" ).toggle( "bounce", { times: 3 }, "slow" );
-        });
+    $('#rightColPic').click(function () {
+        $("#rightColPic").toggle("bounce", { times: 3 }, "slow");
+    });
+
 
 });

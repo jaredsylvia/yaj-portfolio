@@ -62,7 +62,7 @@ module.exports = function (db, availablePages) {
             const userId = await userModel.addUser(loginName, email, password);
 
             // Fetch the user data to create a session payload
-            const newUser = await userModel.getUserById(userId);
+            const user = await userModel.getUserByLoginName(loginName);
 
             // Create a session payload
             const tokenPayload = {

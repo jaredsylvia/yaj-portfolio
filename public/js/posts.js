@@ -10,7 +10,7 @@ $(document).ready(function() {
     function addPost(subject, body) {
         $.ajax({
             type: 'POST',
-            url: '/contacts/api/posts/add', // Adjust the URL accordingly
+            url: '/api/posts/add', // Adjust the URL accordingly
             headers: {
                 Authorization: 'Bearer ' + $.cookie('token')
             },
@@ -18,8 +18,9 @@ $(document).ready(function() {
             contentType: 'application/json',
             success: function(response) {
                 console.log('Post added successfully.');
-                // Refresh the page or update the posts list
-                location.reload();
+                
+                window.location.href = '/';
+                                
             },
             error: function(error) {
                 console.error('Error adding post:', error);

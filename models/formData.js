@@ -63,22 +63,16 @@ class FormData {
   }
 
   async deleteById(id) {
-    const deleteFormDataQuery = 'DELETE FROM formData WHERE id = ?';
-    try {
-      await this.db.promise().beginTransaction();
+    console.log(id);
+    // Delete interests associated with the message
+    const deleteInterestsQuery = 'DELETE FROM message_interests WHERE message_id = ?';
+    await this.db.promise().query(deleteInterestsQuery, [id]);
 
-      // Delete form data
-      await this.db.promise().query(deleteFormDataQuery, [id]);
-
-      // Commit the transaction
-      await this.db.promise().commit();
-
-      return true;
-    } catch (err) {
-      await this.db.promise().rollback();
-      console.error('Error deleting form data:', err);
-      throw err;
-    }
+    // Delete the message
+    const deleteMessageQuery = 'DELETE FROM formData WHERE id = ?';
+    const [deleteMessageResult] = await this.db.promise().query(deleteMessageQuery, [id]);
+    return deleteMessageResult.affectedRows > 0;
+    
   }
 
   async getInterests(messageId) {
@@ -86,7 +80,8 @@ class FormData {
     const [rows] = await this.db.promise().query(query, [messageId]);
     return rows;
   }
+}
 
-  }
+  
 
 module.exports = FormData;

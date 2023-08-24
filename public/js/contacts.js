@@ -49,9 +49,9 @@ $(document).ready(function() {
     });
 
     // Function to delete entry via AJAX
-    function deleteEntry(entryId) {
+    function deleteEntry(contactId) {
         const confirmDelete = confirm("Do you really want to delete this entry?");
-
+        
         if (!confirmDelete) {
             return;
         }
@@ -62,12 +62,13 @@ $(document).ready(function() {
             headers: {
                 Authorization: 'Bearer ' + $.cookie('token')
             },
-            data: JSON.stringify({ entryId: entryId }),
+            data: JSON.stringify({ contactId: contactId }),
             contentType: 'application/json',
             success: function(response) {
                 console.log('Entry deleted successfully.');
-                // Refresh the DataTable or update the data source
-                table.ajax.reload();
+                // Reload the page
+                location.reload();
+                
             },
             error: function(error) {
                 console.error('Error deleting entry:', error);
