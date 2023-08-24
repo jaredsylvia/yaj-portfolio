@@ -60,7 +60,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/users/api/edit',
+            url: '/api/users/edit',
             headers: {
                 Authorization: 'Bearer ' + $.cookie('token')
             },
@@ -85,7 +85,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/users/api/del',
+            url: '/api/users/del',
             headers: {
                 Authorization: 'Bearer ' + $.cookie('token')
             },
