@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const userModel = require('../models/user'); // Import the user model
+const UserModel = require('../models/user');
 const router = express.Router();
 const FormData = require('../models/formData');
 const PostModel = require('../models/postModel'); 
@@ -11,6 +11,7 @@ const secretKey = process.env.SECRET_KEY;
 module.exports = function (db, availablePages) {
     const formDataModel = new FormData(db);
     const postModel = new PostModel(db);
+    const userModel = new UserModel(db);    
     
     function decodeJwt(req, res, next) {
         const authHeader = req.headers.authorization;

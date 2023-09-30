@@ -1,50 +1,54 @@
+//Load npm provided libraries
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
-const port = process.env.PORT || 3000;
+const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const path = require('path');
-const { db, createTables } = require('./models/db');
-const Interests = require('./models/interests');
+
+// Create a database connection
+const Database  = require('./models/db');
+const db = new Database();
+
+// Create tables if they don't exist
+const initializeDatabase = require('./setup/initializeDatabase');
+initializeDatabase(db).catch(error => {
+    console.error('Error initializing database:', error);
+  });
+
+// Load models
+const Interest = require('./models/interests');
 const Weather = require('./models/weather');
-const cookieParser = require('cookie-parser');
+const FormData = require('./models/formData');
+const PostModel = require('./models/postModel');
+const UserModel = require('./models/user');
+const StreamModel = require('./models/streamModel');
 
-// Create an instance of the Weather model
-const weatherModel = new Weather();
+// Load middleware
+const serveWithCache = require('./middleware/publicFolderCaching');
 
-// Set the path to the partials directory
-const partialsDirectory = path.join(__dirname, 'views/partials');
+// Load utils/helpers
+const pageDiscovery = require('./utils/pageDiscovery');
+const weatherTimer = require('./utils/weatherTimer');
 
-// Get the list of subdirectories in the partials directory
-const subdirectories = fs.readdirSync(partialsDirectory, { withFileTypes: true })
-    .filter(item => item.isDirectory())
-    .map(item => item.name);
+// Instantiate models
+const interestsModel = new Interest(db);
+const weatherModel = new Weather(db);
+const formDataModel = new FormData(db);
+const postModel = new PostModel(db);
+const userModel = new UserModel(db);
+const streamModel = new StreamModel(db);
 
-// Initialize array to store available pages
-const availablePages = [];
+// Discover available pages
+const availablePages = pageDiscovery.availablePages;
 
-// Iterate through subdirectories and files within them
-subdirectories.forEach(subdir => {
-    const subdirPath = path.join(partialsDirectory, subdir);
-    const filesInSubdir = fs.readdirSync(subdirPath)
-        .filter(file => file.endsWith('.ejs'));
 
-    filesInSubdir.forEach(file => {
-        const categoryName = subdir;
-        const pageName = file.replace('.ejs', '');
+// Insert weather data when the app is first run
+weatherTimer(db);
 
-        let transformedPageName = pageName.charAt(0).toUpperCase() + pageName.slice(1);
-
-        if (transformedPageName.match(/[A-Z][a-z]+/g)) {
-            transformedPageName = transformedPageName.replace(/([a-z])([A-Z])/g, '$1 $2');
-        }
-
-        availablePages.push({ category: categoryName, page: transformedPageName });
-    });
-});
-
-console.log(availablePages);
+// Create an express app
+const app = express();
+const port = process.env.PORT || 3000;
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -52,50 +56,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Initialize tables and insert interests
-createTables(() => {
-    const interestsModel = new Interests(db);
-    const interests = ["Technology", "Sports", "Music", "Art", "Food"];
-
-    const insertInterests = async () => {
-        for (const interest of interests) {
-            try {
-                const existingInterest = await interestsModel.getByName(interest);
-                if (!existingInterest) {
-                    const interestId = await interestsModel.addInterest(interest);
-                    console.log(`Interest "${interest}" inserted successfully with ID: ${interestId}`);
-                } else {
-                    console.log(`Interest "${interest}" already exists in the database.`);
-                }
-            } catch (error) {
-                console.error(`Error inserting interest "${interest}":`, error);
-            }
-        }
-
-        // Insert initial weather data after interests are inserted
-        weatherModel
-            .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
-            .then((weatherData) => weatherModel.insertWeatherData(weatherData))
-            .then(() => {
-                // Schedule weather retrieval and insertion every 10 minutes after the initial insertion
-                setInterval(() => {
-                    weatherModel
-                        .fetchWeatherData(process.env.LATITUDE, process.env.LONGITUDE)
-                        .then((weatherData) => weatherModel.insertWeatherData(weatherData))
-                        .catch((error) => {
-                            console.error('Error retrieving and inserting weather data:', error);
-                        });
-                }, 10 * 60 * 1000);
-            })
-            .catch((error) => {
-                console.error('Error retrieving and inserting initial weather data:', error);
-            });
-    };
-
-    insertInterests();
-});
+serveWithCache(app);
 
 // API endpoitns
 const apiController = require('./controllers/apiController')(db);

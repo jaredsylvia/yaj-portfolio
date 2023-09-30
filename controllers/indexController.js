@@ -5,14 +5,15 @@ const FormData = require('../models/formData');
 const Interests = require('../models/interests');
 const Weather = require('../models/weather');
 const PostData = require('../models/postModel');
-const userModel = require('../models/user');
+const UserModel = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 module.exports = function (db, availablePages) {
     const formDataModel = new FormData(db);
     const interestsModel = new Interests(db);
-    const weatherModel = new Weather(); 
+    const weatherModel = new Weather(db); 
     const postModel = new PostData(db);
+    const userModel = new UserModel(db);
     
     
     router.use((req, res, next) => {
@@ -89,7 +90,8 @@ module.exports = function (db, availablePages) {
             const interests = await interestsModel.getAll();
 
             // Retrieve the weather data
-            const weatherData = await weatherModel.getCurrentWeather(); 
+            const weatherData = await weatherModel.getCurrentWeather();
+            console.log(weatherData);
             
             const posts = await postModel.getAllPosts();
 

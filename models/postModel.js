@@ -3,58 +3,63 @@ class PostModel {
         this.db = db;
     }
 
-    createPost(subject, body) {
+    createPostTable() {
+        const tableDefinition = {
+            tableName: 'posts',
+            columns: [
+                { name: 'id', type: 'INT AUTO_INCREMENT PRIMARY KEY' },
+                { name: 'subject', type: 'VARCHAR(255)' },
+                { name: 'body', type: 'TEXT' },
+                { name: 'timestamp', type: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' }
+            ]
+        };
+
+        this.db.createTableFromDefinition(tableDefinition);
+    }
+
+    async createPost(subject, body) {
         const query = 'INSERT INTO posts (subject, body) VALUES (?, ?)';
-        return new Promise((resolve, reject) => {
-            this.db.query(query, [subject, body], (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results.insertId);
-                }
-            });
-        });
+        try {
+            const result = await this.db.query(query, [subject, body]);
+            return result.insertId;
+        } catch (error) {
+            console.error('Error creating post:', error);
+            throw error;
+        }
     }
 
-    deletePostById(postId) {
+    async deletePostById(postId) {
         const query = 'DELETE FROM posts WHERE id = ?';
-        return new Promise((resolve, reject) => {
-            this.db.query(query, [postId], (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results.affectedRows > 0);
-                }
-            });
-        });
+        try {
+            const result = await this.db.query(query, [postId]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error deleting post:', error);
+            throw error;
+        }
     }
 
-    editPost(postId, newSubject, newBody) {
+    async editPost(postId, newSubject, newBody) {
         const query = 'UPDATE posts SET subject = ?, body = ? WHERE id = ?';
-        return new Promise((resolve, reject) => {
-            this.db.query(query, [newSubject, newBody, postId], (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results.affectedRows > 0);
-                }
-            });
-        });
+        try {
+            const result = await this.db.query(query, [newSubject, newBody, postId]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error editing post:', error);
+            throw error;
+        }
     }
 
-    getAllPosts() {
+    async getAllPosts() {
         const query = 'SELECT * FROM posts ORDER BY timestamp DESC';
-        return new Promise((resolve, reject) => {
-            this.db.query(query, (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results);
-                }
-            });
-        });
+        try {
+            const results = await this.db.query(query);
+            return results;
+        } catch (error) {
+            console.error('Error retrieving posts:', error);
+            throw error;
+        }
     }
-    
 }
 
 module.exports = PostModel;

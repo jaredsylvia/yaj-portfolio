@@ -1,166 +1,137 @@
 const bcrypt = require('bcrypt');
-const { db } = require('./db'); 
 
-// Function to check if the users table is empty
-async function isUsersTableEmpty() {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'SELECT COUNT(*) as count FROM users',
-            (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results[0].count === 0);
-                }
-            }
-        );
-    });
-}
+class UserModel {
+    constructor(db) {
+        this.db = db;
+        this.createUsersTable = this.createUsersTable.bind(this);
+        this.isUsersTableEmpty = this.isUsersTableEmpty.bind(this);
+        this.addUser = this.addUser.bind(this);
+        this.getUserByLoginName = this.getUserByLoginName.bind(this);
+        this.deleteUserById = this.deleteUserById.bind(this);
+        this.editUser = this.editUser.bind(this);
+        this.getAllUsers = this.getAllUsers.bind(this);
+    }
 
-// Function to add a new user
-async function addUser(loginName, email, password) {
-    const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+    createUsersTable() {
+        const tableDefinition = {
+            tableName: 'users',
+            columns: [
+                { name: 'id', type: 'INT AUTO_INCREMENT PRIMARY KEY' },
+                { name: 'loginName', type: 'VARCHAR(255)' },
+                { name: 'email', type: 'VARCHAR(255)' },
+                { name: 'password', type: 'VARCHAR(255)' },
+                { name: 'isAdmin', type: 'BOOLEAN' }
+            ]
+        };
 
-    return new Promise(async (resolve, reject) => {
+        this.db.createTableFromDefinition(tableDefinition);
+    }
+
+    async isUsersTableEmpty() {
         try {
-            const isFirstUser = await isUsersTableEmpty(); // Check if the users table is empty
-            const isAdmin = isFirstUser; // Set isAdmin to true for the first user, false for others
-
-            db.query(
-                'INSERT INTO users (loginName, email, password, isAdmin) VALUES (?, ?, ?, ?)',
-                [loginName, email, hashedPassword, isAdmin],
-                (error, results) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(results.insertId);
-                    }
-                }
-            );
+            const sql = 'SELECT COUNT(*) as count FROM users';
+            const results = await this.db.query(sql);
+            return results[0].count === 0;
         } catch (error) {
-            reject(error);
+            console.error('Error executing SQL query:', error);
+            throw error;
         }
-    });
-}
+    }
 
-// Function to get user by login name (username)
-async function getUserByLoginName(loginName) {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'SELECT * FROM users WHERE loginName = ?',
-            [loginName],
-            (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results[0] || null);
-                }
+    async addUser(loginName, email, password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        try {
+            const isFirstUser = await this.isUsersTableEmpty();
+            const isAdmin = isFirstUser;
+
+            const sql = 'INSERT INTO users (loginName, email, password, isAdmin) VALUES (?, ?, ?, ?)';
+            const result = await this.db.query(sql, [loginName, email, hashedPassword, isAdmin]);
+            return result.insertId;
+        } catch (error) {
+            console.error('Error adding user:', error);
+            throw error;
+        }
+    }
+
+    async getUserByLoginName(loginName) {
+        try {
+            const sql = 'SELECT * FROM users WHERE loginName = ?';
+            const results = await this.db.query(sql, [loginName]);
+            return results[0] || null;
+        } catch (error) {
+            console.error('Error executing SQL query:', error);
+            throw error;
+        }
+    }
+
+    async deleteUserById(userId) {
+        try {
+            const sql = 'DELETE FROM users WHERE id = ?';
+            const result = await this.db.query(sql, [userId]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error executing SQL query:', error);
+            throw error;
+        }
+    }
+
+    async editUser(userId, newUserData) {
+        try {
+            const { loginName, email, password, isAdmin } = newUserData;
+            const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
+
+            const updateFields = [];
+            const queryParams = [];
+
+            if (loginName !== undefined) {
+                updateFields.push('loginName = ?');
+                queryParams.push(loginName);
             }
-        );
-    });
-}
 
-// Function to delete a user by ID
-async function deleteUserById(userId) {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'DELETE FROM users WHERE id = ?',
-            [userId],
-            (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results.affectedRows > 0);
-                }
+            if (email !== undefined) {
+                updateFields.push('email = ?');
+                queryParams.push(email);
             }
-        );
-    });
-}
 
-// Function to edit user information
-async function editUser(userId, newUserData) {
-    const { loginName, email, password, isAdmin } = newUserData;
-    console.log(newUserData);
-    console.log(isAdmin);
-    // Hash the new password if provided
-    const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
-
-    // Build the SQL query and parameters based on the provided fields
-    const updateFields = [];
-    const queryParams = [];
-
-    if (loginName !== undefined) {
-        updateFields.push('loginName = ?');
-        queryParams.push(loginName);
-    }
-
-    if (email !== undefined) {
-        updateFields.push('email = ?');
-        queryParams.push(email);
-    }
-
-    if (hashedPassword !== null) {
-        updateFields.push('password = ?');
-        queryParams.push(hashedPassword);
-    }
-
-    if (isAdmin !== undefined) {
-        updateFields.push('isAdmin = ?');
-        queryParams.push(isAdmin);
-    }
-
-    if(userId) {
-        queryParams.push(userId);
-    }
-
-    if (updateFields.length === 0) {
-        // No fields to update
-        return false;
-    }
-
-
-    console.log(queryParams);
-    const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
-    console.log(updateQuery);
-    return new Promise((resolve, reject) => {
-        db.query(
-            updateQuery,
-            queryParams,
-            (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results.affectedRows > 0);
-                }
+            if (hashedPassword !== null) {
+                updateFields.push('password = ?');
+                queryParams.push(hashedPassword);
             }
-        );
-    });
-}
 
-
-// Function to get all users
-async function getAllUsers() {
-    return new Promise((resolve, reject) => {
-        db.query(
-            'SELECT * FROM users',
-            (error, results) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(results);
-                }
+            if (isAdmin !== undefined) {
+                updateFields.push('isAdmin = ?');
+                queryParams.push(isAdmin);
             }
-        );
-    });
+
+            if (userId) {
+                queryParams.push(userId);
+            }
+
+            if (updateFields.length === 0) {
+                // No fields to update
+                return false;
+            }
+
+            const updateQuery = `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`;
+            const result = await this.db.query(updateQuery, queryParams);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.error('Error executing SQL query:', error);
+            throw error;
+        }
+    }
+
+    async getAllUsers() {
+        try {
+            const sql = 'SELECT * FROM users';
+            const users = await this.db.query(sql);
+            return users;
+        } catch (error) {
+            console.error('Error executing SQL query:', error);
+            throw error;
+        }
+    }
 }
 
-
-
-module.exports = {
-    isUsersTableEmpty,
-    addUser,
-    getUserByLoginName,
-    deleteUserById,
-    editUser,
-    getAllUsers,  
-};
+module.exports = UserModel;
