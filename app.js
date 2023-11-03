@@ -8,7 +8,24 @@ const path = require('path');
 
 // Create a database connection
 const Database  = require('./models/db');
-const db = new Database();
+//const db = new Database();
+
+// Create a database connection with reconnection logic
+let db = null;
+
+const connectWithReconnection = async () => {
+    const Database = require('./models/db');
+    while (!db) {
+        try {
+            db = new Database();
+            console.log('Database connected successfully.');
+        } catch (error) {
+            console.error('Error connecting to the database:', error);
+            console.log('Retrying connection in 1 second...');
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+    }
+};
 
 // Create tables if they don't exist
 const initializeDatabase = require('./setup/initializeDatabase');
