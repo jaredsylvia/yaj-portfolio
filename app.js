@@ -27,6 +27,8 @@ const connectWithReconnection = async () => {
     }
 };
 
+connectWithReconnection(); // Start the initial connection
+
 // Create tables if they don't exist
 const initializeDatabase = require('./setup/initializeDatabase');
 initializeDatabase(db).catch(error => {
